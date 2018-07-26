@@ -1,0 +1,16 @@
+language: go
+
+addons:
+  apt:
+    packages:
+      - xml2rfc
+
+install:
+  - curl -L https://github.com/miekg/mmark/releases/download/v1.3.6/mmark_1.3.6_linux_x86_64.tgz | tar -zxv -C $HOME/bin mmark
+
+script:
+  - ./build.sh
+
+branches:
+  only:
+    - master

@@ -1,0 +1,586 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>The Ristretto Elliptic Curve Groups</title>
+
+  <style type="text/css" title="Xml2Rfc (sans serif)">
+  /*<![CDATA[*/
+	  a {
+	  text-decoration: none;
+	  }
+      /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+      a.info {
+          /* This is the key. */
+          position: relative;
+          z-index: 24;
+          text-decoration: none;
+      }
+      a.info:hover {
+          z-index: 25;
+          color: #FFF; background-color: #900;
+      }
+      a.info span { display: none; }
+      a.info:hover span.info {
+          /* The span will display just on :hover state. */
+          display: block;
+          position: absolute;
+          font-size: smaller;
+          top: 2em; left: -5em; width: 15em;
+          padding: 2px; border: 1px solid #333;
+          color: #900; background-color: #EEE;
+          text-align: left;
+      }
+	  a.smpl {
+	  color: black;
+	  }
+	  a:hover {
+	  text-decoration: underline;
+	  }
+	  a:active {
+	  text-decoration: underline;
+	  }
+	  address {
+	  margin-top: 1em;
+	  margin-left: 2em;
+	  font-style: normal;
+	  }
+	  body {
+	  color: black;
+	  font-family: verdana, helvetica, arial, sans-serif;
+	  font-size: 10pt;
+	  max-width: 55em;
+	  
+	  }
+	  cite {
+	  font-style: normal;
+	  }
+	  dd {
+	  margin-right: 2em;
+	  }
+	  dl {
+	  margin-left: 2em;
+	  }
+	
+	  ul.empty {
+	  list-style-type: none;
+	  }
+	  ul.empty li {
+	  margin-top: .5em;
+	  }
+	  dl p {
+	  margin-left: 0em;
+	  }
+	  dt {
+	  margin-top: .5em;
+	  }
+	  h1 {
+	  font-size: 14pt;
+	  line-height: 21pt;
+	  page-break-after: avoid;
+	  }
+	  h1.np {
+	  page-break-before: always;
+	  }
+	  h1 a {
+	  color: #333333;
+	  }
+	  h2 {
+	  font-size: 12pt;
+	  line-height: 15pt;
+	  page-break-after: avoid;
+	  }
+	  h3, h4, h5, h6 {
+	  font-size: 10pt;
+	  page-break-after: avoid;
+	  }
+	  h2 a, h3 a, h4 a, h5 a, h6 a {
+	  color: black;
+	  }
+	  img {
+	  margin-left: 3em;
+	  }
+	  li {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol p {
+	  margin-left: 0em;
+	  }
+	  p {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  pre {
+	  margin-left: 3em;
+	  background-color: lightyellow;
+	  padding: .25em;
+	  }
+	  pre.text2 {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f0f0f0;
+	  width: 69em;
+	  }
+	  pre.inline {
+	  background-color: white;
+	  padding: 0em;
+	  }
+	  pre.text {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  width: 69em;
+	  }
+	  pre.drawing {
+	  border-style: solid;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  padding: 2em;
+	  }
+	  table {
+	  margin-left: 2em;
+	  }
+	  table.tt {
+	  vertical-align: top;
+	  }
+	  table.full {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.headers {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.tt td {
+	  vertical-align: top;
+	  }
+	  table.full td {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.tt th {
+	  vertical-align: top;
+	  }
+	  table.full th {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.headers th {
+	  border-style: none none inset none;
+	  border-width: 1px;
+	  }
+	  table.left {
+	  margin-right: auto;
+	  }
+	  table.right {
+	  margin-left: auto;
+	  }
+	  table.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	  }
+	  caption {
+	  caption-side: bottom;
+	  font-weight: bold;
+	  font-size: 9pt;
+	  margin-top: .5em;
+	  }
+	
+	  table.header {
+	  border-spacing: 1px;
+	  width: 95%;
+	  font-size: 10pt;
+	  color: white;
+	  }
+	  td.top {
+	  vertical-align: top;
+	  }
+	  td.topnowrap {
+	  vertical-align: top;
+	  white-space: nowrap; 
+	  }
+	  table.header td {
+	  background-color: gray;
+	  width: 50%;
+	  }
+	  table.header a {
+	  color: white;
+	  }
+	  td.reference {
+	  vertical-align: top;
+	  white-space: nowrap;
+	  padding-right: 1em;
+	  }
+	  thead {
+	  display:table-header-group;
+	  }
+	  ul.toc, ul.toc ul {
+	  list-style: none;
+	  margin-left: 1.5em;
+	  margin-right: 0em;
+	  padding-left: 0em;
+	  }
+	  ul.toc li {
+	  line-height: 150%;
+	  font-weight: bold;
+	  font-size: 10pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  ul.toc li li {
+	  line-height: normal;
+	  font-weight: normal;
+	  font-size: 9pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  li.excluded {
+	  font-size: 0pt;
+	  }
+	  ul p {
+	  margin-left: 0em;
+	  }
+	
+	  .comment {
+	  background-color: yellow;
+	  }
+	  .center {
+	  text-align: center;
+	  }
+	  .error {
+	  color: red;
+	  font-style: italic;
+	  font-weight: bold;
+	  }
+	  .figure {
+	  font-weight: bold;
+	  text-align: center;
+	  font-size: 9pt;
+	  }
+	  .filename {
+	  color: #333333;
+	  font-weight: bold;
+	  font-size: 12pt;
+	  line-height: 21pt;
+	  text-align: center;
+	  }
+	  .fn {
+	  font-weight: bold;
+	  }
+	  .hidden {
+	  display: none;
+	  }
+	  .left {
+	  text-align: left;
+	  }
+	  .right {
+	  text-align: right;
+	  }
+	  .title {
+	  color: #990000;
+	  font-size: 18pt;
+	  line-height: 18pt;
+	  font-weight: bold;
+	  text-align: center;
+	  margin-top: 36pt;
+	  }
+	  .vcardline {
+	  display: block;
+	  }
+	  .warning {
+	  font-size: 14pt;
+	  background-color: yellow;
+	  }
+	
+	
+	  @media print {
+	  .noprint {
+		display: none;
+	  }
+	
+	  a {
+		color: black;
+		text-decoration: none;
+	  }
+	
+	  table.header {
+		width: 90%;
+	  }
+	
+	  td.header {
+		width: 50%;
+		color: black;
+		background-color: white;
+		vertical-align: top;
+		font-size: 12pt;
+	  }
+	
+	  ul.toc a::after {
+		content: leader('.') target-counter(attr(href), page);
+	  }
+	
+	  ul.ind li li a {
+		content: target-counter(attr(href), page);
+	  }
+	
+	  .print2col {
+		column-count: 2;
+		-moz-column-count: 2;
+		column-fill: auto;
+	  }
+	  }
+	
+	  @page {
+	  @top-left {
+		   content: "Internet-Draft"; 
+	  } 
+	  @top-right {
+		   content: "December 2010"; 
+	  } 
+	  @top-center {
+		   content: "Abbreviated Title";
+	  } 
+	  @bottom-left {
+		   content: "Doe"; 
+	  } 
+	  @bottom-center {
+		   content: "Expires June 2011"; 
+	  } 
+	  @bottom-right {
+		   content: "[Page " counter(page) "]"; 
+	  } 
+	  }
+	
+	  @page:first { 
+		@top-left {
+		  content: normal;
+		}
+		@top-right {
+		  content: normal;
+		}
+		@top-center {
+		  content: normal;
+		}
+	  }
+  /*]]>*/
+  </style>
+
+  <link href="#rfc.toc" rel="Contents">
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
+<link href="#rfc.section.1.1" rel="Chapter" title="1.1 Conventions Used in This Document">
+<link href="#rfc.section.2" rel="Chapter" title="2 Background">
+<link href="#rfc.section.2.1" rel="Chapter" title="2.1 Pitfalls of a cofactor">
+<link href="#rfc.section.2.2" rel="Chapter" title="2.2 Disadvantages of multiplying by the cofactor">
+<link href="#rfc.section.3" rel="Chapter" title="3 Definition">
+<link href="#rfc.references" rel="Chapter" title="4 Normative References">
+<link href="#rfc.authors" rel="Chapter">
+
+
+  <meta name="generator" content="xml2rfc version 2.10.0 - https://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Who, Dr., Ed. and D. Davros, Ed." />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-ristretto-00" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-07-25" />
+  <meta name="dct.abstract" content="This memo specifies two elliptic curves groups of prime order with a high level of practical security in cryptographic applications.  These elliptic curve groups are intended to operate at the ~128-bit and ~224-bit security level, respectively, and supplement the existing elliptic curve groups specified in " />
+  <meta name="description" content="This memo specifies two elliptic curves groups of prime order with a high level of practical security in cryptographic applications.  These elliptic curve groups are intended to operate at the ~128-bit and ~224-bit security level, respectively, and supplement the existing elliptic curve groups specified in " />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+<td class="left">Network Working Group</td>
+<td class="right">Dr. Who, Ed.</td>
+</tr>
+<tr>
+<td class="left">Internet-Draft</td>
+<td class="right">The Timelords</td>
+</tr>
+<tr>
+<td class="left">Intended status: Informational</td>
+<td class="right">D. Davros, Ed.</td>
+</tr>
+<tr>
+<td class="left">Expires: January 26, 2019</td>
+<td class="right">Imperial Daleks</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">July 25, 2018</td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">The Ristretto Elliptic Curve Groups<br />
+  <span class="filename">draft-ristretto-00</span></p>
+  
+  <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
+<p>This memo specifies two elliptic curves groups of prime order with a high level of practical security in cryptographic applications.  These elliptic curve groups are intended to operate at the ~128-bit and ~224-bit security level, respectively, and supplement the existing elliptic curve groups specified in <a href="#RFC7748" class="xref">[RFC7748]</a>.  </p>
+<h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on January 26, 2019.</p>
+<h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
+<p>Copyright (c) 2018 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a>
+</li>
+<ul><li>1.1.   <a href="#rfc.section.1.1">Conventions Used in This Document</a>
+</li>
+</ul><li>2.   <a href="#rfc.section.2">Background</a>
+</li>
+<ul><li>2.1.   <a href="#rfc.section.2.1">Pitfalls of a cofactor</a>
+</li>
+<li>2.2.   <a href="#rfc.section.2.2">Disadvantages of multiplying by the cofactor</a>
+</li>
+</ul><li>3.   <a href="#rfc.section.3">Definition</a>
+</li>
+<li>4.   <a href="#rfc.references">Normative References</a>
+</li>
+<li><a href="#rfc.authors">Authors' Addresses</a>
+</li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1">
+<a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a>
+</h1>
+<p><strong>Ristretto</strong> is a technique for constructing prime order elliptic curve groups with non-malleable encodings. It extends the <a href="https://eprint.iacr.org/2015/673.pdf">Decaf</a> approach to cofactor elimination to support cofactor-\(8\) curves such as Curve25519.  </p>
+<p id="rfc.section.1.p.2">In particular, this allows an existing Curve25519 library to implement a prime-order group with only a thin abstraction layer, and makes it possible for systems using Ed25519 signatures to be safely extended with zero-knowledge protocols, with <strong>no additional cryptographic assumptions</strong> and <strong>minimal code changes</strong>.  </p>
+<p id="rfc.section.1.p.3">Ristretto can be used in conjunction with Edwards curves with cofactor \(4\) or \(8\), and provides the following specific parameter choices: </p>
+<p></p>
+
+<ul>
+<li>
+<samp>ristretto255</samp>: Ristretto group for Curve25519;</li>
+<li>
+<samp>ristretto448</samp>: Ristretto group for Ed448-Goldilocks.</li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.1.1">
+<a href="#rfc.section.1.1">1.1.</a> <a href="#conventions-used-in-this-document" id="conventions-used-in-this-document">Conventions Used in This Document</a>
+</h1>
+<p id="rfc.section.1.1.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119" class="xref">[RFC2119]</a>.  </p>
+<h1 id="rfc.section.2">
+<a href="#rfc.section.2">2.</a> <a href="#background" id="background">Background</a>
+</h1>
+<p id="rfc.section.2.p.1">Many cryptographic protocols require an implementation of a group of prime order \( \ell \), usually an elliptic curve group.  However, modern elliptic curve implementations with fast, simple formulas don't provide a prime-order group.  Instead, they provide a group of order \(h \cdot \ell \) for a small cofactor, usually \( h = 4 \) or \( h = 8\).  </p>
+<p id="rfc.section.2.p.2">In many existing protocols, the complexity of managing this abstraction is pushed up the stack via ad-hoc protocol modifications.  But these modifications are a recurring source of vulnerabilities and subtle design complications, and they usually prevent applying the security proofs of the abstract protocol.  </p>
+<p id="rfc.section.2.p.3">On the other hand, prime-order curves provide the correct abstraction, but their formulas are slower and more difficult to implement in constant time.  A clean solution to this dilemma is Mike Hamburg's <a href="https://eprint.iacr.org/2015/673.pdf">Decaf proposal</a>, which shows how to use a cofactor-\(4\) curve to provide a prime-order group &#8211; with no additional cost.  </p>
+<p id="rfc.section.2.p.4">This provides the best of both choices: the correct abstraction required to implement complex protocols, and the simplicity, efficiency, and speed of a non-prime-order curve.  However, many systems use Curve25519, which has cofactor \(8\), not cofactor \(4\).  </p>
+<p><strong>Ristretto</strong> is a variant of Decaf designed for compatibility with cofactor-\(8\) curves, such as Curve25519.  It is particularly well-suited for extending systems using Ed25519 signatures with complex zero-knowledge protocols.  </p>
+<h1 id="rfc.section.2.1">
+<a href="#rfc.section.2.1">2.1.</a> <a href="#pitfalls-of-a-cofactor" id="pitfalls-of-a-cofactor">Pitfalls of a cofactor</a>
+</h1>
+<p id="rfc.section.2.1.p.1">Curve cofactors have caused several vulnerabilities in higher-layer protocol implementations.  The abstraction mismatch can also have subtle consequences for programs using these cryptographic protocols, as design quirks in the protocol bubble up&#8212;possibly even to the UX level.  </p>
+<p id="rfc.section.2.1.p.2">The malleability in Ed25519 signatures <a href="https://moderncrypto.org/mail-archive/curves/2017/000898.html">caused a double-spend vulnerability</a>&#8212;or, technically, octuple-spend as \( h = 8\)&#8212;in the CryptoNote scheme used by the Monero cryptocurrency, where the adversary could add a low-order point to an existing transaction, producing a new, seemingly-valid transaction.  </p>
+<p id="rfc.section.2.1.p.3">In Tor, Ed25519 public key malleability would mean that every v3 onion service has eight different addresses, causing mismatches with user expectations and potential gotchas for service operators.  Fixing this required <a href="https://trac.torproject.org/projects/tor/ticket/22006#comment:13">expensive runtime checks</a> in the v3 onion services protocol, requiring a full scalar multiplication, point compression, and equality check.  This check <a href="https://github.com/torproject/tor/search?q=hs_address_is_valid&amp;unscoped_q=hs_address_is_valid">must be called in several places</a> to validate that the onion service's key does not contain a small torsion component.  </p>
+<h1 id="rfc.section.2.2">
+<a href="#rfc.section.2.2">2.2.</a> <a href="#disadvantages-of-multiplying-by-the-cofactor" id="disadvantages-of-multiplying-by-the-cofactor">Disadvantages of multiplying by the cofactor</a>
+</h1>
+<p id="rfc.section.2.2.p.1">In some protocols, designers can specify appropriate places to multiply by the cofactor \(h\) to "fix" the abstraction mismatches; in others, it's unfeasible or impossible.  In any case, multiplying by the cofactor often means that security proofs are not cleanly applicable.  </p>
+<p id="rfc.section.2.2.p.2">As touched upon earlier, a curve point consists of an \( h \)-torsion component and an \( \ell \)-torsion component.  Multiplying by the cofactor is frequently referred to as "clearing" the low-order component, however doing so affects the \( \ell \)-torsion component, effectively mangling the point.  While this works for some cases, it is not a validation method.  To validate that a point is in the prime-order subgroup, one can alternately multiply by \( \ell \) and check that the result is the identity.  But this is extremely expensive.  </p>
+<p id="rfc.section.2.2.p.3">Another option is to mandate that all scalars have particular bit patterns, as in X25519 and Ed25519.  However, this means that scalars are no longer well-defined \( \mathrm{mod} \ell \), which makes HKD schemes <a href="https://moderncrypto.org/mail-archive/curves/2017/000858.html">much more complicated</a>.  Yet another approach is to choose a <a href="https://moderncrypto.org/mail-archive/curves/2017/000866.html">torsion-safe representative</a>: an integer which is \( 0 \mathrm{mod} h \) and with a particular value \( \mathrm{mod} \ell \), so that scalar multiplications remove the low-order component.  But these representatives are a few bits too large to be used with existing implementations, and in any case aren't a comprehensive solution.  </p>
+<h1 id="rfc.section.3">
+<a href="#rfc.section.3">3.</a> <a href="#definition" id="definition">Definition</a>
+</h1>
+<p id="rfc.section.3.p.1">Ristretto is a construction of a prime-order group using a non-prime-order Edwards curve.  </p>
+<p id="rfc.section.3.p.2">The Decaf paper suggests using a non-prime-order curve \(\mathcal E\) to implement a prime-order group by constructing a quotient group.  Ristretto uses the same idea, but with different formulas, in order to allow the use of cofactor-\(8\) curves such as Curve25519.  </p>
+<p id="rfc.section.3.p.3">Internally, a Ristretto point is represented by an Edwards point.  Two Edwards points \(P, Q\) may represent the same Ristretto point, in the same way that different projective \( X, Y, Z \) coordinates may represent the same Edwards point.  Group operations on Ristretto points are carried out with no overhead by performing the operations on the representative Edwards points.  </p>
+<p id="rfc.section.3.p.4">To do this, Ristretto defines: </p>
+<p></p>
+
+<ol>
+<li>a new type for Ristretto points which contains the representative Edwards point;</li>
+<li>equality on Ristretto points so that all equivalent representatives are considered equal;</li>
+<li>an encoding function on Ristretto points so that all equivalent representatives are encoded as identical bitstrings;</li>
+<li>a decoding function on bitstrings with built-in validation, so that only the canonical encodings of valid points are accepted;</li>
+<li>a map from bitstrings to Ristretto points suitable for hash-to-point operations.</li>
+</ol>
+
+<p> </p>
+<p id="rfc.section.3.p.6">In other words, an existing Edwards curve implementation can implement the correct abstraction for complex protocols just by adding a new type and three or four functions.  Moreover, equality checking for the Ristretto group is actually less expensive than equality checking for the underlying curve.  </p>
+<h1 id="rfc.references">
+<a href="#rfc.references">4.</a> Normative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="RFC2119">[RFC2119]</b></td>
+<td class="top">
+<a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7748">[RFC7748]</b></td>
+<td class="top">
+<a>Langley, A.</a>, <a>Hamburg, M.</a> and <a>S. Turner</a>, "<a href="https://tools.ietf.org/html/rfc7748">Elliptic Curves for Security</a>", RFC 7748, DOI 10.17487/RFC7748, January 2016.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.authors"><a href="#rfc.authors">Authors' Addresses</a></h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Peter Wilton Cushing</span> (editor)
+	  <span class="n hidden">
+		<span class="family-name">Who</span>
+	  </span>
+	</span>
+	<span class="org vcardline">The Timelords</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:drwho@bbc.co.uk">drwho@bbc.co.uk</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Michael Wisher</span> (editor)
+	  <span class="n hidden">
+		<span class="family-name">Davros</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Imperial Daleks</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:davros@dalek.rs">davros@dalek.rs</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>

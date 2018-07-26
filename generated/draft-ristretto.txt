@@ -1,0 +1,336 @@
+
+
+
+
+Network Working Group                                       Dr. Who, Ed.
+Internet-Draft                                             The Timelords
+Intended status: Informational                            D. Davros, Ed.
+Expires: January 26, 2019                                Imperial Daleks
+                                                           July 25, 2018
+
+
+                  The Ristretto Elliptic Curve Groups
+                           draft-ristretto-00
+
+Abstract
+
+   This memo specifies two elliptic curves groups of prime order with a
+   high level of practical security in cryptographic applications.
+   These elliptic curve groups are intended to operate at the ~128-bit
+   and ~224-bit security level, respectively, and supplement the
+   existing elliptic curve groups specified in [RFC7748].
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on January 26, 2019.
+
+Copyright Notice
+
+   Copyright (c) 2018 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+
+
+
+
+Who & Davros            Expires January 26, 2019                [Page 1]
+
+Internet-Draft                  Ristretto                      July 2018
+
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Conventions Used in This Document . . . . . . . . . . . .   2
+   2.  Background  . . . . . . . . . . . . . . . . . . . . . . . . .   2
+     2.1.  Pitfalls of a cofactor  . . . . . . . . . . . . . . . . .   3
+     2.2.  Disadvantages of multiplying by the cofactor  . . . . . .   4
+   3.  Definition  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   4.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     4.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
+     4.2.  URIs  . . . . . . . . . . . . . . . . . . . . . . . . . .   5
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
+
+1.  Introduction
+
+   *Ristretto* is a technique for constructing prime order elliptic
+   curve groups with non-malleable encodings.  It extends the Decaf [1]
+   approach to cofactor elimination to support cofactor-\(8\) curves
+   such as Curve25519.
+
+   In particular, this allows an existing Curve25519 library to
+   implement a prime-order group with only a thin abstraction layer, and
+   makes it possible for systems using Ed25519 signatures to be safely
+   extended with zero-knowledge protocols, with *no additional
+   cryptographic assumptions* and *minimal code changes*.
+
+   Ristretto can be used in conjunction with Edwards curves with
+   cofactor \(4\) or \(8\), and provides the following specific
+   parameter choices:
+
+   o  "ristretto255": Ristretto group for Curve25519;
+
+   o  "ristretto448": Ristretto group for Ed448-Goldilocks.
+
+1.1.  Conventions Used in This Document
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+2.  Background
+
+   Many cryptographic protocols require an implementation of a group of
+   prime order \( \ell \), usually an elliptic curve group.  However,
+   modern elliptic curve implementations with fast, simple formulas
+
+
+
+Who & Davros            Expires January 26, 2019                [Page 2]
+
+Internet-Draft                  Ristretto                      July 2018
+
+
+   don't provide a prime-order group.  Instead, they provide a group of
+   order \(h \cdot \ell \) for a small cofactor, usually \( h = 4 \) or
+   \( h = 8\).
+
+   In many existing protocols, the complexity of managing this
+   abstraction is pushed up the stack via ad-hoc protocol modifications.
+   But these modifications are a recurring source of vulnerabilities and
+   subtle design complications, and they usually prevent applying the
+   security proofs of the abstract protocol.
+
+   On the other hand, prime-order curves provide the correct
+   abstraction, but their formulas are slower and more difficult to
+   implement in constant time.  A clean solution to this dilemma is Mike
+   Hamburg's Decaf proposal [2], which shows how to use a cofactor-\(4\)
+   curve to provide a prime-order group - with no additional cost.
+
+   This provides the best of both choices: the correct abstraction
+   required to implement complex protocols, and the simplicity,
+   efficiency, and speed of a non-prime-order curve.  However, many
+   systems use Curve25519, which has cofactor \(8\), not cofactor \(4\).
+
+   *Ristretto* is a variant of Decaf designed for compatibility with
+   cofactor-\(8\) curves, such as Curve25519.  It is particularly well-
+   suited for extending systems using Ed25519 signatures with complex
+   zero-knowledge protocols.
+
+2.1.  Pitfalls of a cofactor
+
+   Curve cofactors have caused several vulnerabilities in higher-layer
+   protocol implementations.  The abstraction mismatch can also have
+   subtle consequences for programs using these cryptographic protocols,
+   as design quirks in the protocol bubble up--possibly even to the UX
+   level.
+
+   The malleability in Ed25519 signatures caused a double-spend
+   vulnerability [3]--or, technically, octuple-spend as \( h = 8\)--in
+   the CryptoNote scheme used by the Monero cryptocurrency, where the
+   adversary could add a low-order point to an existing transaction,
+   producing a new, seemingly-valid transaction.
+
+   In Tor, Ed25519 public key malleability would mean that every v3
+   onion service has eight different addresses, causing mismatches with
+   user expectations and potential gotchas for service operators.
+   Fixing this required expensive runtime checks [4] in the v3 onion
+   services protocol, requiring a full scalar multiplication, point
+   compression, and equality check.  This check must be called in
+   several places [5] to validate that the onion service's key does not
+   contain a small torsion component.
+
+
+
+Who & Davros            Expires January 26, 2019                [Page 3]
+
+Internet-Draft                  Ristretto                      July 2018
+
+
+2.2.  Disadvantages of multiplying by the cofactor
+
+   In some protocols, designers can specify appropriate places to
+   multiply by the cofactor \(h\) to "fix" the abstraction mismatches;
+   in others, it's unfeasible or impossible.  In any case, multiplying
+   by the cofactor often means that security proofs are not cleanly
+   applicable.
+
+   As touched upon earlier, a curve point consists of an \( h \)-torsion
+   component and an \( \ell \)-torsion component.  Multiplying by the
+   cofactor is frequently referred to as "clearing" the low-order
+   component, however doing so affects the \( \ell \)-torsion component,
+   effectively mangling the point.  While this works for some cases, it
+   is not a validation method.  To validate that a point is in the
+   prime-order subgroup, one can alternately multiply by \( \ell \) and
+   check that the result is the identity.  But this is extremely
+   expensive.
+
+   Another option is to mandate that all scalars have particular bit
+   patterns, as in X25519 and Ed25519.  However, this means that scalars
+   are no longer well-defined \( \mathrm{mod} \ell \), which makes HKD
+   schemes much more complicated [6].  Yet another approach is to choose
+   a torsion-safe representative [7]: an integer which is \( 0
+   \mathrm{mod} h \) and with a particular value \( \mathrm{mod} \ell
+   \), so that scalar multiplications remove the low-order component.
+   But these representatives are a few bits too large to be used with
+   existing implementations, and in any case aren't a comprehensive
+   solution.
+
+3.  Definition
+
+   Ristretto is a construction of a prime-order group using a non-prime-
+   order Edwards curve.
+
+   The Decaf paper suggests using a non-prime-order curve \(\mathcal E\)
+   to implement a prime-order group by constructing a quotient group.
+   Ristretto uses the same idea, but with different formulas, in order
+   to allow the use of cofactor-\(8\) curves such as Curve25519.
+
+   Internally, a Ristretto point is represented by an Edwards point.
+   Two Edwards points \(P, Q\) may represent the same Ristretto point,
+   in the same way that different projective \( X, Y, Z \) coordinates
+   may represent the same Edwards point.  Group operations on Ristretto
+   points are carried out with no overhead by performing the operations
+   on the representative Edwards points.
+
+   To do this, Ristretto defines:
+
+
+
+
+Who & Davros            Expires January 26, 2019                [Page 4]
+
+Internet-Draft                  Ristretto                      July 2018
+
+
+   1.  a new type for Ristretto points which contains the representative
+       Edwards point;
+
+   2.  equality on Ristretto points so that all equivalent
+       representatives are considered equal;
+
+   3.  an encoding function on Ristretto points so that all equivalent
+       representatives are encoded as identical bitstrings;
+
+   4.  a decoding function on bitstrings with built-in validation, so
+       that only the canonical encodings of valid points are accepted;
+
+   5.  a map from bitstrings to Ristretto points suitable for hash-to-
+       point operations.
+
+   In other words, an existing Edwards curve implementation can
+   implement the correct abstraction for complex protocols just by
+   adding a new type and three or four functions.  Moreover, equality
+   checking for the Ristretto group is actually less expensive than
+   equality checking for the underlying curve.
+
+4.  References
+
+4.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
+              for Security", RFC 7748, DOI 10.17487/RFC7748, January
+              2016, <https://www.rfc-editor.org/info/rfc7748>.
+
+4.2.  URIs
+
+   [1] https://eprint.iacr.org/2015/673.pdf
+
+   [2] https://eprint.iacr.org/2015/673.pdf
+
+   [3] https://moderncrypto.org/mail-archive/curves/2017/000898.html
+
+   [4] https://trac.torproject.org/projects/tor/ticket/22006#comment:13
+
+   [5] https://github.com/torproject/tor/
+       search?q=hs_address_is_valid&unscoped_q=hs_address_is_valid
+
+   [6] https://moderncrypto.org/mail-archive/curves/2017/000858.html
+
+
+
+Who & Davros            Expires January 26, 2019                [Page 5]
+
+Internet-Draft                  Ristretto                      July 2018
+
+
+   [7] https://moderncrypto.org/mail-archive/curves/2017/000866.html
+
+Authors' Addresses
+
+   Peter Wilton Cushing (editor)
+   The Timelords
+
+   Email: drwho@bbc.co.uk
+
+
+   Michael Wisher (editor)
+   Imperial Daleks
+
+   Email: davros@dalek.rs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Who & Davros            Expires January 26, 2019                [Page 6]
