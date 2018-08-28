@@ -1,23 +1,27 @@
-% title    = "The Ristretto Elliptic Curve Groups"
-% abbrev   = "Ristretto"
-% category = "info"
-% docName  = "draft-ristretto-00"
-% area     = "Internet"
-% date     = 2018-07-25T23:00:00Z
-%
-% [[author]]
-% initials     = "Dr. "
-% surname      = "Who"
-% fullname     = "Peter Wilton Cushing"
-% role         = "editor"
-% organization = "The Timelords"
-%
-% [[author]]
-% initials     = "D.A.V.R.O.S."
-% surname      = "Davros"
-% fullname     = "Michael Wisher"
-% role         = "editor"
-% organization = "Imperial Daleks"
+%%%
+
+    title    = "The Ristretto Elliptic Curve Groups"
+    abbrev   = "Ristretto"
+    category = "info"
+    docName  = "draft-ristretto-00"
+    area     = "Internet"
+    date     = 2018-07-25T23:00:00Z
+    
+    [[author]]
+    initials     = "Dr. "
+    surname      = "Who"
+    fullname     = "Peter Wilton Cushing"
+    role         = "editor"
+    organization = "The Timelords"
+    
+    [[author]]
+    initials     = "D.A.V.R.O.S."
+    surname      = "Davros"
+    fullname     = "Michael Wisher"
+    role         = "editor"
+    organization = "Imperial Daleks"
+
+%%%
 
 .# Abstract
 
